@@ -1,23 +1,21 @@
 package gee
 
 import (
-	"fmt"
 	"net/http"
 )
 
-type HandlerFunc func(http.ResponseWriter, *http.Request)
+type HandlerFunc func(c *Context)
 
 type Engine struct {
-	router map[string]HandlerFunc
+	router *router
 }
 
 func New() *Engine {
-	return &Engine{router: make(map[string]HandlerFunc)}
+	return &Engine{router: newRouter()}
 }
 
 func (engine *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
-	key := method + "-" + pattern
-	engine.router[key] = handler
+	engine.router.addRouter(method, pattern, handler)
 }
 
 func (engine *Engine) GET(pattern string, handler HandlerFunc) {
@@ -29,14 +27,13 @@ func (engine *Engine) POST(pattern string, handler HandlerFunc) {
 }
 
 func (engine *Engine) Run(addr string) (err error) {
+	// ListenAndServe(addr string, handler Handler)
+	// engine也就是第二个参数，handler，必须是实现ServerHTTP(http.ResponseWriter, *http.Request)
+	// 也就是说，只要传入任何实现了 ServerHTTP 接口的实例，所有的HTTP请求，就都交给了该实例处理了。
 	return http.ListenAndServe(addr, engine)
 }
 
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	key := r.Method + "-" + r.URL.Path
-	if handler, ok := engine.router[key]; ok {
-		handler(w, r)
-	} else {
-		fmt.Fprintf(w, "404 NOT FOUND: %s\n", r.URL)
-	}
+	c := newContext(w, r)
+	engine.router.haddle(c)
 }

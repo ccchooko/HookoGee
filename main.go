@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ccchooko/HookoGee/gee"
 	"log"
 	"net/http"
@@ -10,16 +9,23 @@ func main() {
 	r := gee.New()
 	r.GET("/", indexHandler)
 	r.GET("/hello", helloHandler)
+	r.POST("/login", loginHandler)
 
 	log.Fatal(r.Run(":9999"))
 }
 
-func indexHandler(w http.ResponseWriter, req *http.Request) {
-	for k, v := range req.Header {
-		fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
-	}
+func indexHandler(c *gee.Context) {
+	c.HTML(http.StatusOK, "<h1>Hello HookoGee</h1>")
 }
 
-func helloHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Url.Path = %q\n", req.URL.Path)
+func helloHandler(c *gee.Context) {
+	// expect /hello?name=geektutu
+	c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+}
+
+func loginHandler(c *gee.Context) {
+	c.JSON(http.StatusOK, gee.H{
+		"username": c.PostForm("username"),
+		"passwd": c.PostForm("passwd"),
+	})
 }

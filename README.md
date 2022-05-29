@@ -26,4 +26,27 @@ type Context struct {
 }
 ```
 
+# 第三天 route & trie树
 
+1. 梳理总体架构
+
+   - gee.New() 新建一个web框架引擎，该方法完成：
+
+     - 定义一个Engine{}
+     - new一个Router{}, 作为Engine{}的参数，Router{}：
+         - 包含一个trim树
+         - 包含一个制定path的handler的map
+   - 执行Engine{}.GET/POST(), 在这个方法执行route的注册，即trie树的插入&handler方法的添加
+
+     - engine.addRoute()  ---->  route.addRouter()  ------> trim.insert()
+     - map[method + "-" + pattern] = handler
+
+   - 定义Engine{}.ServeHTTP(), 实现了这个接口，才能自定义自己框架的handler，这个方法完成了：
+    
+     - 框架context的创建，包含一条请求的所有信息
+     - 执行这个请求的handler方法，即type HandlerFunc func(c *Context)
+
+   - 做好上述准备工作之后，Engine{}.Run()，就是实现了http.ListenAndServe(addr, **engine**)，这个方法的执行，必须一览Engine{}.ServeHTTP()的实现
+
+2. trim 树实现
+  代码里面关键的部分已经做了注释

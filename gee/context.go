@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// 代码最开头，给map[string]interface{}起了一个别名gee.H，
+// H 代码最开头，给map[string]interface{}起了一个别名gee.H，
 // 构建JSON数据时，显得更简洁。
 type H map[string]interface{}
 
@@ -16,6 +16,7 @@ type Context struct {
 	Path       string
 	Method     string
 	StatusCode int
+	Params     map[string]string
 }
 
 func newContext(w http.ResponseWriter, r *http.Request) *Context {

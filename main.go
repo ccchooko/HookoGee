@@ -7,9 +7,10 @@ import (
 )
 func main() {
 	r := gee.New()
-	r.GET("/", indexHandler)
-	r.GET("/hello", helloHandler)
-	r.POST("/login", loginHandler)
+	//r.GET("/", indexHandler)
+	//r.GET("/hello/:name", helloHandler)
+	//r.POST("/login", loginHandler)
+	r.GET("/assets/*filepath", nil)
 
 	log.Fatal(r.Run(":9999"))
 }
@@ -20,7 +21,8 @@ func indexHandler(c *gee.Context) {
 
 func helloHandler(c *gee.Context) {
 	// expect /hello?name=geektutu
-	c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+	//c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+	c.String(http.StatusOK, "hello %s, you're at %s\n", c.Params["name"], c.Path)
 }
 
 func loginHandler(c *gee.Context) {

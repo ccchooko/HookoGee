@@ -50,3 +50,11 @@ type Context struct {
 
 2. trim 树实现
   代码里面关键的部分已经做了注释
+
+# 第四天 分组控制
+
+教程里面这块实现的有些怪怪的，比如，Group嵌入了Engine，Engine又嵌入了Group。参考了评论，改写了下，改写点说明如下：
+
+- Group直接继承了*router，即也同时继承了route的所有方法
+- Engine直接继承了*Group，也就是说Engine能像没有加入分组功能时，直接调用Group实现的方法，如GET、POST、addRoute等
+- group单独拆出一个文件，个人感觉这样实现更清晰，有空可以在参考参考gin这块的实现

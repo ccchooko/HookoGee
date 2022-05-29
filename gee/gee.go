@@ -7,24 +7,35 @@ import (
 type HandlerFunc func(c *Context)
 
 type Engine struct {
-	router *router
+	*RouterGroup
 }
 
 func New() *Engine {
-	return &Engine{router: newRouter()}
+	//return &Engine{router: newRouter()}
+	group := newRootGroup()
+	engine := &Engine{
+		RouterGroup: group,
+	}
+	return engine
 }
 
-func (engine *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
-	engine.router.addRouter(method, pattern, handler)
-}
+//func (engine *Engine) Group(prefix string) *RouterGroup {
+//	group := engine.RouterGroup.Group(prefix)
+//	engine.groups = append(engine.groups, group)
+//	return group
+//}
 
-func (engine *Engine) GET(pattern string, handler HandlerFunc) {
-	engine.addRoute("GET", pattern, handler)
-}
-
-func (engine *Engine) POST(pattern string, handler HandlerFunc) {
-	engine.addRoute("POST", pattern, handler)
-}
+//func (engine *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
+//	engine.router.addRouter(method, pattern, handler)
+//}
+//
+//func (engine *Engine) GET(pattern string, handler HandlerFunc) {
+//	engine.addRoute("GET", pattern, handler)
+//}
+//
+//func (engine *Engine) POST(pattern string, handler HandlerFunc) {
+//	engine.addRoute("POST", pattern, handler)
+//}
 
 func (engine *Engine) Run(addr string) (err error) {
 	// ListenAndServe(addr string, handler Handler)

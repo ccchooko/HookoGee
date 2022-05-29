@@ -7,10 +7,15 @@ import (
 )
 func main() {
 	r := gee.New()
-	//r.GET("/", indexHandler)
+	r.GET("/index", indexHandler)
 	//r.GET("/hello/:name", helloHandler)
 	//r.POST("/login", loginHandler)
-	r.GET("/assets/*filepath", nil)
+	//r.GET("/assets/*filepath", nil)
+	v1 := r.Group("/v1")
+	v1.GET("/hello/:name", helloHandler)
+
+	v11 := v1.Group("/v11")
+	v11.GET("/hello/:name", helloHandler)
 
 	log.Fatal(r.Run(":9999"))
 }
